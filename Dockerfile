@@ -1,13 +1,18 @@
-FROM node:18-alpine
+FROM node:18.17.1
 
-WORKDIR /app
-# copy current dir items to work dir
-COPY . .
-# install all packages
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
 RUN yarn
-# transpile the typescript code
-RUN yarn transpile
 
-CMD ["node", "dist/server.js"]
+# copy the app to work dir
+COPY . .
+
+# transpile the typescript code
+RUN yarn compile
+
 # port to run the app
 EXPOSE 5000
+
+CMD ["node", "dist/server.js"]

@@ -1,15 +1,6 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../utils/responseHandler";
-
-function checkComputedAmount(amount: number, computedAmount: number) {
-  if (computedAmount < 0) {
-    throw new Error("Split value is less than 0");
-  } else if (amount < 0) {
-    throw new Error("Computation did not add up: Amount is less than 0");
-  } else if (computedAmount > amount) {
-    throw new Error("Calculated amount is greater than the amount provided");
-  }
-}
+import { checkComputedAmount } from "../middlewares/requestValidator";
 
 const computeSplitedPayment = async (req: Request, res: Response) => {
   try {
