@@ -10,7 +10,7 @@ RUN yarn
 COPY . .
 
 # transpile the typescript code
-RUN yarn compile
+RUN yarn transpile
 
 # port to run the app
 EXPOSE 5000
