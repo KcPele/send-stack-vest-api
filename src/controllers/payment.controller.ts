@@ -30,6 +30,7 @@ const computeSplitedPayment = async (req: Request, res: Response) => {
     const SplitBreakdown: { SplitEntityId: string; Amount: number }[] = [];
     //compute flat
     const computeFlat = (splitValue: number) => {
+      console.log("computeFlat", _Amount, splitValue);
       checkComputedAmount(_Amount, splitValue);
       let _amt = Math.min(_Amount, splitValue);
       _Amount -= _amt;
@@ -39,7 +40,7 @@ const computeSplitedPayment = async (req: Request, res: Response) => {
     //compute percentage
     const computePercentage = (splitValue: number) => {
       let _amt = (_Amount * splitValue) / 100;
-
+      console.log("computePercentage", _Amount, _amt);
       checkComputedAmount(_Amount, _amt);
       _amt = Math.min(_amt, _Amount);
       _Amount -= _amt;
@@ -47,7 +48,7 @@ const computeSplitedPayment = async (req: Request, res: Response) => {
     };
 
     //compute ratio
-    let remainingRatioAmount = _Amount;
+    let remainingRatioAmount = 0;
     const ratioSplits = SplitInfo.filter(
       (split) => split.SplitType === "RATIO"
     );
@@ -56,6 +57,9 @@ const computeSplitedPayment = async (req: Request, res: Response) => {
       0
     );
     const computeRatio = (splitValue: number) => {
+      console.log("computeRatio", _Amount, splitValue);
+      console.log("remainingRatioAmount", remainingRatioAmount);
+      console.log("totalRatio", totalRatio);
       checkComputedAmount(_Amount, splitValue);
       let _amt = Math.min(
         (splitValue / totalRatio) * remainingRatioAmount,
@@ -80,6 +84,7 @@ const computeSplitedPayment = async (req: Request, res: Response) => {
       Amount: computePercentage(split.SplitValue),
     }));
 
+    remainingRatioAmount = _Amount;
     const SplitBreakdownRatio = ratioSplits.map((split) => ({
       SplitEntityId: split.SplitEntityId,
       Amount: computeRatio(split.SplitValue),
