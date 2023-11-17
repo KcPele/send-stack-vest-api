@@ -4,10 +4,16 @@ interface SplitInfo {
   SplitEntityId: string;
 }
 
-interface SplitPayment {
+interface Transaction {
   ID: number;
   Amount: number;
   Currency: string;
   CustomerEmail: string;
   SplitInfo: SplitInfo[];
+}
+
+interface SplitResult {
+  ID: number;
+  Balance: number;
+  SplitBreakdown: { SplitEntityId: string; Amount: number }[];
 }
