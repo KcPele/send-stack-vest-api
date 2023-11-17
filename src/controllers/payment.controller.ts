@@ -3,59 +3,15 @@ import { errorResponse, successResponse } from "../utils/responseHandler";
 import { checkComputedAmount } from "../middlewares/requestValidator";
 import { body } from "express-validator";
 
-export const splitValidationRules = () => {
-  return [
-    body("ID").isNumeric().withMessage("ID must be a number"),
-    body("Amount")
-      .isFloat({ min: 0 })
-      .withMessage("Amount must be a number and not less than 0"),
-    body("SplitInfo").isArray().withMessage("SplitInfo must be an array"),
-    //check if split info is greater than 20 and less than 1
-    body("SplitInfo")
-      .custom((value) => {
-        if (value.length > 20 || value.length < 1) {
-          throw new Error(
-            "SplitInfo must be an array of length greater than 0 and less than 20"
-          );
-        }
-        return true;
-      })
-      .withMessage(
-        "SplitInfo must be an array of length greater than 0 and less than 20"
-      ),
-    body("SplitInfo.*.SplitEntityId")
-      .isString()
-      .withMessage("SplitEntityId must be a string"),
-    body("SplitInfo.*.SplitType")
-      .isIn(["FLAT", "PERCENTAGE", "RATIO"])
-      .withMessage(
-        "SplitType must be one of the following: FLAT, PERCENTAGE, RATIO"
-      ),
-
-    //check if split value is greater than 0
-    body("SplitInfo.*.SplitValue")
-      .isFloat({ min: 0 })
-      .withMessage("SplitValue must be a number and not less than 0"),
-
-    body("CustomerEmail")
-      .isEmail()
-      .withMessage("CustomerEmail must be a valid email"),
-    body("Currency").isString().withMessage("Currency must be a string"),
-  ];
-};
-
 const computeSplitedPayment = async (req: Request, res: Response) => {
   try {
     const transaction: Transaction = req.body;
-
-    // Validate the transaction object
 
     // Implement the split calculation logic here
     const splitResult: SplitResult = calculateSplit(transaction);
 
     // Send the response
-
-    res.status(200).json(splitResult);
+    successResponse(res, 200, splitResult);
   } catch (error: any) {
     console.error(error);
     errorResponse(res, 500, { error: true, message: error.message });
@@ -110,9 +66,8 @@ function calculateSplit(transaction: Transaction): SplitResult {
           .reduce((acc, s) => acc + s.SplitValue, 0);
         splitAmount =
           (splitEntity.SplitValue / totalRatio) * openingRatioBalance;
-        console.log("openingRatioBalance", openingRatioBalance);
-        console.log(balance, splitAmount);
-        balance = Number(balance.toFixed(2)) - Number(splitAmount.toFixed(2));
+
+        balance = 0;
         break;
     }
 

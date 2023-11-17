@@ -1,9 +1,9 @@
 import express from "express";
+import { computeSplitedPayment } from "../controllers/payment.controller";
 import {
-  computeSplitedPayment,
   splitValidationRules,
-} from "../controllers/payment.controller";
-import { validateRequest } from "../middlewares/requestValidator";
+  validateRequest,
+} from "../middlewares/requestValidator";
 const router = express.Router();
 
 router.post(
