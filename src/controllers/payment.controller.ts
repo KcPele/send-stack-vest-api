@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../utils/responseHandler";
 import { checkComputedAmount } from "../middlewares/requestValidator";
-import { body } from "express-validator";
 
 const computeSplitedPayment = async (req: Request, res: Response) => {
   try {
